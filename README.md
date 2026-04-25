@@ -416,7 +416,7 @@ docker-compose exec backend coverage run manage.py test && coverage report
 ## Demo
 
 - **Aplicación desplegada:** https://enersinc-prueba.duckdns.org/
-- **Video explicativo (flujo de desarrollo + UI):** `[URL Google Drive]`
+- **Video explicativo (flujo de desarrollo + UI):** https://drive.google.com/file/d/1r1DDHiB4av5m6ocOWroVJduanBsXc0jj/view?usp=drive_link
 
 ---
 
