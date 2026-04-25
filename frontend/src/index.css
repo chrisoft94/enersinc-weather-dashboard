@@ -15,34 +15,34 @@
 .dark .ant-table-thead > tr > th,
 .dark .ant-table-tbody > tr > td,
 .dark .ant-table-row {
-  @apply bg-slate-800 text-gray-200 border-slate-700 !important;
+  @apply !bg-slate-800 !text-gray-200 !border-slate-700;
 }
 
 .dark .ant-table-thead > tr > th {
-  @apply bg-slate-900 text-white font-semibold border-b-2 border-slate-700 !important;
+  @apply !bg-slate-900 !text-white !font-semibold !border-b-2 !border-slate-700;
 }
 
 .dark .ant-table-tbody > tr:hover > td {
-  @apply bg-slate-700 !important;
+  @apply !bg-slate-700;
 }
 
 .dark .ant-pagination-item a,
 .dark .ant-pagination-item-link {
-  @apply text-gray-300 !important;
+  @apply !text-gray-300;
 }
 
 .dark .ant-pagination-item-active {
-  @apply bg-brand-blue border-brand-blue !important;
+  @apply !bg-brand-blue !border-brand-blue;
 }
 
 .dark .ant-pagination-item-active a {
-  @apply text-white !important;
+  @apply !text-white;
 }
 
 .dark .ant-select-selector {
-  @apply bg-slate-800 text-white border-slate-700 !important;
+  @apply !bg-slate-800 !text-white !border-slate-700;
 }
 
 .dark .ant-select-arrow {
-  @apply text-gray-400 !important;
+  @apply !text-gray-400;
 }
