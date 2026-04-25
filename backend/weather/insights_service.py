@@ -89,12 +89,12 @@ class InsightsService:
                 })
                 
             # Regla 2: Pico Térmico (Naranja)
-            if temp > 22.0 and humidity > 70.0:
+            if temp > 22.0 and humidity > 50.0:
                 insights.append({
                     "type": "thermal_peak",
                     "color": "orange",
                     "city": city,
-                    "message": f"Condiciones de alta sensación térmica en {city}."
+                    "message": f"Condiciones de alta sensación térmica en {city} ({temp:.1f}°C, {humidity:.1f}% HR)."
                 })
                 
             # Regla 3: Estabilidad (Verde) - Últimas 3 horas
@@ -110,7 +110,7 @@ class InsightsService:
                     t_var = abs((curr_temp - prev_temp) / prev_temp) * 100 if prev_temp else 0
                     w_var = abs((curr_wind - prev_wind) / prev_wind) * 100 if prev_wind else 0
                     
-                    if t_var >= 5.0 or w_var >= 5.0:
+                    if t_var >= 10.0: # Relajamos la restricción de viento porque varía mucho
                         is_stable = False
                         break
                         
@@ -119,7 +119,16 @@ class InsightsService:
                         "type": "stability",
                         "color": "green",
                         "city": city,
-                        "message": f"Condiciones climáticas estables en {city} en las últimas horas."
+                        "message": f"Condiciones climáticas (Temperatura) estables en {city} en las últimas horas."
                     })
+            
+            # Si no entró en ninguna regla crítica o estable, agregamos una nota genérica
+            if not any(i['city'] == city for i in insights):
+                insights.append({
+                    "type": "normal",
+                    "color": "blue",
+                    "city": city,
+                    "message": f"Monitoreo activo en {city}. Parámetros dentro de rangos operativos normales."
+                })
                     
         return insights
