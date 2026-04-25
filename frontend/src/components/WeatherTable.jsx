@@ -108,27 +108,27 @@ export const WeatherTable = () => {
       title: 'Humedad',
       dataIndex: 'humidity',
       key: 'humidity',
-      render: (val) => <span className="font-mono text-gray-700">{val} %</span>
+      render: (val) => <span className="font-mono text-gray-700 dark:text-gray-300">{val} %</span>
     },
     {
       title: 'Viento',
       dataIndex: 'wind_speed',
       key: 'wind_speed',
-      render: (val) => <span className="font-mono text-gray-700">{val} m/s</span>
+      render: (val) => <span className="font-mono text-gray-700 dark:text-gray-300">{val} m/s</span>
     },
     {
       title: 'Fecha y Hora',
       dataIndex: 'timestamp',
       key: 'timestamp',
-      render: (text) => <span className="text-brand-gray text-sm">{new Date(text).toLocaleString()}</span>,
+      render: (text) => <span className="text-brand-gray dark:text-gray-400 text-sm">{new Date(text).toLocaleString()}</span>,
     },
   ];
 
   return (
-    <div className="bg-surface-card border border-surface-border rounded-lg shadow-sm p-6">
+    <div className="bg-surface-card dark:bg-slate-800 border border-surface-border dark:border-slate-700 rounded-lg shadow-sm p-6 overflow-hidden">
       
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 border-b border-surface-border pb-4">
-        <h3 className="text-xl font-semibold text-gray-900">Historial de Telemetría</h3>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 border-b border-surface-border dark:border-slate-700 pb-4">
+        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Historial de Telemetría</h3>
         <Button 
           type="primary" 
           size="large"
@@ -141,21 +141,23 @@ export const WeatherTable = () => {
         </Button>
       </div>
       
-      <Table 
-        columns={columns} 
-        dataSource={data} 
-        rowKey="id" 
-        pagination={{
-          current: pagination.current,
-          pageSize: pagination.pageSize,
-          total: pagination.total,
-          showSizeChanger: true,
-          pageSizeOptions: ['5', '10', '20', '50'],
-        }}
-        loading={loading}
-        onChange={handleTableChange}
-        scroll={{ x: 'max-content' }} 
-      />
+      <div className="dark-table-wrapper">
+        <Table 
+          columns={columns} 
+          dataSource={data} 
+          rowKey="id" 
+          pagination={{
+            current: pagination.current,
+            pageSize: pagination.pageSize,
+            total: pagination.total,
+            showSizeChanger: true,
+            pageSizeOptions: ['5', '10', '20', '50'],
+          }}
+          loading={loading}
+          onChange={handleTableChange}
+          scroll={{ x: 'max-content' }} 
+        />
+      </div>
     </div>
   );
 };

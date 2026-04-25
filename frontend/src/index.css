@@ -7,3 +7,42 @@
     @apply bg-surface-bg text-brand-gray font-sans antialiased m-0;
   }
 }
+
+/* Ant Design Dark Mode Overrides */
+.dark .ant-table,
+.dark .ant-table-container,
+.dark .ant-table-cell,
+.dark .ant-table-thead > tr > th,
+.dark .ant-table-tbody > tr > td,
+.dark .ant-table-row {
+  @apply bg-slate-800 text-gray-200 border-slate-700 !important;
+}
+
+.dark .ant-table-thead > tr > th {
+  @apply bg-slate-900 text-white font-semibold border-b-2 border-slate-700 !important;
+}
+
+.dark .ant-table-tbody > tr:hover > td {
+  @apply bg-slate-700 !important;
+}
+
+.dark .ant-pagination-item a,
+.dark .ant-pagination-item-link {
+  @apply text-gray-300 !important;
+}
+
+.dark .ant-pagination-item-active {
+  @apply bg-brand-blue border-brand-blue !important;
+}
+
+.dark .ant-pagination-item-active a {
+  @apply text-white !important;
+}
+
+.dark .ant-select-selector {
+  @apply bg-slate-800 text-white border-slate-700 !important;
+}
+
+.dark .ant-select-arrow {
+  @apply text-gray-400 !important;
+}

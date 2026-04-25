@@ -68,7 +68,7 @@ export const Dashboard = () => {
   return (
     <div className="mt-8">
       {isOffline && (
-        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 rounded-md">
+        <div className="bg-yellow-50 dark:bg-yellow-900/30 border-l-4 border-yellow-400 p-4 mb-6 rounded-md">
           <div className="flex">
             <div className="flex-shrink-0">
               <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
@@ -76,8 +76,8 @@ export const Dashboard = () => {
               </svg>
             </div>
             <div className="ml-3">
-              <h3 className="text-sm font-medium text-yellow-800">Modo Sin Conexión Activado</h3>
-              <div className="mt-2 text-sm text-yellow-700">
+              <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-200">Modo Sin Conexión Activado</h3>
+              <div className="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
                 <p>Navegando sin internet. Los datos mostrados son respaldos de tu última sesión en vivo.</p>
               </div>
             </div>
@@ -86,44 +86,44 @@ export const Dashboard = () => {
       )}
 
       {/* Selectores */}
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 items-end mb-8 bg-surface-card p-6 rounded-lg border border-surface-border shadow-sm">
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 items-center mb-8 bg-surface-card dark:bg-slate-800 p-6 rounded-lg border border-surface-border dark:border-slate-700 shadow-sm">
         <div>
-          <label className="block text-sm font-semibold text-brand-gray mb-2 uppercase tracking-wide">Punto de Medición 1</label>
+          <label className="block text-sm font-semibold text-brand-gray dark:text-gray-400 mb-2 uppercase tracking-wide">Punto de Medición 1</label>
           <select 
             value={city1} 
             onChange={handleCity1Change}
-            className="w-full bg-surface-bg border border-surface-border text-gray-900 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-brand-blue"
+            className="w-full bg-surface-bg dark:bg-slate-900 border border-surface-border dark:border-slate-700 text-gray-900 dark:text-white rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-brand-blue"
           >
             {CITIES.map(city => <option key={city} value={city}>{city}</option>)}
           </select>
         </div>
         
-        <div className="hidden md:flex flex-col items-center justify-center pb-2">
-          <span className="px-4 py-1 bg-gray-100 rounded-full text-xs font-bold text-brand-gray border border-gray-200">VS</span>
+        <div className="hidden md:flex flex-col items-center justify-center pt-6">
+          <span className="px-4 py-1 bg-gray-100 dark:bg-slate-700 rounded-full text-xs font-bold text-brand-gray dark:text-gray-300 border border-gray-200 dark:border-slate-600">VS</span>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-brand-gray mb-2 uppercase tracking-wide">Punto de Medición 2</label>
+          <label className="block text-sm font-semibold text-brand-gray dark:text-gray-400 mb-2 uppercase tracking-wide">Punto de Medición 2</label>
           <select 
             value={city2} 
             onChange={handleCity2Change}
-            className="w-full bg-surface-bg border border-surface-border text-gray-900 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-brand-blue"
+            className="w-full bg-surface-bg dark:bg-slate-900 border border-surface-border dark:border-slate-700 text-gray-900 dark:text-white rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-brand-blue"
           >
             {CITIES.map(city => <option key={city} value={city}>{city}</option>)}
           </select>
         </div>
       </div>
 
-      <div className="mb-6 pb-2 border-b border-surface-border">
-        <h2 className="text-xl font-semibold text-gray-900">Comparativa de Telemetría</h2>
+      <div className="mb-6 pb-2 border-b border-surface-border dark:border-slate-700">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Comparativa de Telemetría</h2>
       </div>
 
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
         
         {/* Columna Ciudad 1 */}
-        <div className="space-y-6">
-          <h3 className="text-lg font-bold text-brand-blue mb-4 uppercase tracking-wider">{city1}</h3>
+        <div className="flex flex-col gap-4">
+          <h3 className="text-lg font-bold text-brand-blue mb-2 uppercase tracking-wider">{city1}</h3>
           <KPICard 
             title="Temperatura" 
             value={dataCity1?.temperature ?? '--'} 
@@ -131,7 +131,7 @@ export const Dashboard = () => {
             status={determineStatus(dataCity1?.temperature)}
             isLoading={loading && !dataCity1}
           />
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <KPICard 
               title="Humedad" 
               value={dataCity1?.humidity ?? '--'} 
@@ -150,8 +150,8 @@ export const Dashboard = () => {
         </div>
 
         {/* Columna Ciudad 2 */}
-        <div className="space-y-6">
-          <h3 className="text-lg font-bold text-brand-blue mb-4 uppercase tracking-wider">{city2}</h3>
+        <div className="flex flex-col gap-4">
+          <h3 className="text-lg font-bold text-brand-blue mb-2 uppercase tracking-wider">{city2}</h3>
           <KPICard 
             title="Temperatura" 
             value={dataCity2?.temperature ?? '--'} 
@@ -159,7 +159,7 @@ export const Dashboard = () => {
             status={determineStatus(dataCity2?.temperature)}
             isLoading={loading && !dataCity2}
           />
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <KPICard 
               title="Humedad" 
               value={dataCity2?.humidity ?? '--'} 

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { message, Alert } from 'antd';
 import { useWeatherStore } from './store/weatherStore';
 import { useWeatherSocket } from './hooks/useWeatherSocket';
@@ -12,6 +12,7 @@ function App() {
   const setIsOffline = useWeatherStore((state) => state.setIsOffline);
   const setDashboardData = useWeatherStore((state) => state.setDashboardData);
   const [messageApi, contextHolder] = message.useMessage();
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Iniciar conexión WebSockets
   useWeatherSocket();
@@ -57,33 +58,52 @@ function App() {
     };
   }, [setIsOffline, isOffline, messageApi]);
 
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
+
+  const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
+
   return (
-    <div className="max-w-7xl mx-auto p-6 min-h-screen font-sans text-brand-gray bg-surface-bg">
-      {contextHolder}
-      
-      {/* 2 y 3. 🛑 Indicador Visual y Fallback (Zustand provee los datos locales) */}
-      {isOffline && (
-        <Alert
-          message="Modo Offline Activado"
-          description="No hay conexión a Internet. Estás navegando con el último estado guardado localmente (Fallback). La interfaz se re-sincronizará automáticamente al detectar conexión."
-          type="warning"
-          showIcon
-          banner
-          style={{ marginBottom: '20px' }}
-        />
-      )}
+    <div className="min-h-screen font-sans text-brand-gray bg-surface-bg dark:bg-slate-900 transition-colors duration-200">
+      <div className="max-w-7xl mx-auto p-6">
+        {contextHolder}
+        
+        {/* 2 y 3. 🛑 Indicador Visual y Fallback (Zustand provee los datos locales) */}
+        {isOffline && (
+          <Alert
+            message="Modo Offline Activado"
+            description="No hay conexión a Internet. Estás navegando con el último estado guardado localmente (Fallback). La interfaz se re-sincronizará automáticamente al detectar conexión."
+            type="warning"
+            showIcon
+            banner
+            style={{ marginBottom: '20px' }}
+          />
+        )}
 
-      {/* Header Corporativo Enersinc */}
-      <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Plataforma de Telemetría ETRM</h1>
-          <p className="text-sm font-medium text-brand-gray">Operaciones y Despacho Energético</p>
-        </div>
-      </header>
+        {/* Header Corporativo Enersinc */}
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Plataforma de Telemetría ETRM</h1>
+            <p className="text-sm font-medium text-brand-gray dark:text-gray-400">Operaciones y Despacho Energético</p>
+          </div>
+          
+          <button 
+            onClick={toggleDarkMode}
+            className="px-4 py-2 rounded-full border border-surface-border dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-800 dark:text-gray-200 shadow-sm hover:shadow-md transition-all flex items-center gap-2 font-medium"
+          >
+            {isDarkMode ? '☀️ Modo Claro' : '🌙 Modo Oscuro'}
+          </button>
+        </header>
 
-      <Dashboard />
-      <WeatherCharts />
-      <WeatherTable />
+        <Dashboard />
+        <WeatherCharts />
+        <WeatherTable />
+      </div>
     </div>
   );
 }

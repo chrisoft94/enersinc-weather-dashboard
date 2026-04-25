@@ -78,22 +78,22 @@ export const WeatherCharts = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Gráfico de Líneas */}
-        <div className="lg:col-span-2 bg-surface-card border border-surface-border rounded-lg p-6 shadow-sm relative">
+        <div className="lg:col-span-2 bg-surface-card dark:bg-slate-800 border border-surface-border dark:border-slate-700 rounded-lg p-6 shadow-sm relative">
           {loading && (
-            <div className="absolute inset-0 bg-white/50 flex items-center justify-center z-10 rounded-lg">
+            <div className="absolute inset-0 bg-white/50 dark:bg-slate-900/50 flex items-center justify-center z-10 rounded-lg">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-blue"></div>
             </div>
           )}
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">Evolución Histórica</h3>
-          <div className="h-80">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Evolución Histórica</h3>
+          <div className="h-80 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={historyTimeline} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+              <LineChart data={historyTimeline} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" opacity={0.5} />
                 <XAxis dataKey="time" tick={{ fill: '#808080', fontSize: 12 }} axisLine={false} tickLine={false} />
                 <YAxis yAxisId="left" tick={{ fill: '#808080', fontSize: 12, fontFamily: 'monospace' }} axisLine={false} tickLine={false} />
                 <YAxis yAxisId="right" orientation="right" tick={{ fill: '#808080', fontSize: 12, fontFamily: 'monospace' }} axisLine={false} tickLine={false} />
                 <Tooltip 
-                  contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E2E8F0', borderRadius: '8px' }}
+                  contentStyle={{ backgroundColor: '#1E293B', color: '#fff', borderColor: '#334155', borderRadius: '8px' }}
                   itemStyle={{ fontFamily: 'monospace' }}
                 />
                 <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', color: '#808080', paddingTop: '10px' }} />
@@ -109,17 +109,17 @@ export const WeatherCharts = () => {
         </div>
 
         {/* Gráfico de Barras */}
-        <div className="lg:col-span-1 bg-surface-card border border-surface-border rounded-lg p-6 shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">Comparación Actual</h3>
-          <div className="h-80">
+        <div className="lg:col-span-1 bg-surface-card dark:bg-slate-800 border border-surface-border dark:border-slate-700 rounded-lg p-6 shadow-sm">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Comparación Actual</h3>
+          <div className="h-80 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={barChartData} margin={{ top: 20, right: 10, left: -20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" opacity={0.5} />
                 <XAxis dataKey="name" tick={{ fill: '#808080', fontSize: 12 }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fill: '#808080', fontSize: 12, fontFamily: 'monospace' }} axisLine={false} tickLine={false} />
                 <Tooltip 
-                  cursor={{fill: '#F8F9FA'}}
-                  contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E2E8F0', borderRadius: '8px' }}
+                  cursor={{fill: '#CBD5E1', opacity: 0.2}}
+                  contentStyle={{ backgroundColor: '#1E293B', color: '#fff', borderColor: '#334155', borderRadius: '8px' }}
                   itemStyle={{ fontFamily: 'monospace' }}
                 />
                 <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', color: '#808080', paddingTop: '10px' }} />
