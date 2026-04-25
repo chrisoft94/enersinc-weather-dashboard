@@ -3,6 +3,7 @@ import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 import { useWeatherStore } from '../store/weatherStore';
+import { handleApiError } from '../utils/errorHandler';
 
 export const WeatherCharts = () => {
   const selectedCity1 = useWeatherStore((state) => state.selectedCity1);
@@ -39,6 +40,9 @@ export const WeatherCharts = () => {
         const res1 = await fetch(`${API_URL}/api/weather/?city=${selectedCity1}&size=10`);
         const res2 = await fetch(`${API_URL}/api/weather/?city=${selectedCity2}&size=10`);
         
+        if (!res1.ok) handleApiError(res1.status, `el historial de ${selectedCity1}`);
+        if (!res2.ok) handleApiError(res2.status, `el historial de ${selectedCity2}`);
+
         const data1 = res1.ok ? await res1.json() : { results: [] };
         const data2 = res2.ok ? await res2.json() : { results: [] };
 
@@ -85,8 +89,8 @@ export const WeatherCharts = () => {
             </div>
           )}
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Evolución Histórica</h3>
-          <div className="h-80 w-full">
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="h-80 w-full" style={{ minWidth: 0, minHeight: 0 }}>
+            <ResponsiveContainer width="99%" height="100%">
               <LineChart data={historyTimeline} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" opacity={0.5} />
                 <XAxis dataKey="time" tick={{ fill: '#808080', fontSize: 12 }} axisLine={false} tickLine={false} />
@@ -111,8 +115,8 @@ export const WeatherCharts = () => {
         {/* Gráfico de Barras */}
         <div className="lg:col-span-1 bg-surface-card dark:bg-slate-800 border border-surface-border dark:border-slate-700 rounded-lg p-6 shadow-sm">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Comparación Actual</h3>
-          <div className="h-80 w-full">
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="h-80 w-full" style={{ minWidth: 0, minHeight: 0 }}>
+            <ResponsiveContainer width="99%" height="100%">
               <BarChart data={barChartData} margin={{ top: 20, right: 10, left: -20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" opacity={0.5} />
                 <XAxis dataKey="name" tick={{ fill: '#808080', fontSize: 12 }} axisLine={false} tickLine={false} />

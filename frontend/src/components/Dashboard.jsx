@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useWeatherStore } from '../store/weatherStore';
 import { KPICard } from './KPICard';
+import { handleApiError } from '../utils/errorHandler';
 
 const CITIES = ["Bogota", "Medellin", "Cali", "Barranquilla", "Cartagena"];
 
@@ -32,6 +33,8 @@ export const Dashboard = () => {
         if (result.results && result.results.length > 0) {
           addRealtimeData(result.results[0]);
         }
+      } else {
+        handleApiError(response.status, `la actualización de ${cityName}`);
       }
     } catch (err) {
       console.error(`Error fetching data for ${cityName}`, err);

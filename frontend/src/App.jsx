@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { message, Alert } from 'antd';
 import { useWeatherStore } from './store/weatherStore';
 import { useWeatherSocket } from './hooks/useWeatherSocket';
+import { handleApiError } from './utils/errorHandler';
 import { Dashboard } from './components/Dashboard';
 import { WeatherCharts } from './components/WeatherCharts';
 import { WeatherTable } from './components/WeatherTable';
@@ -33,6 +34,8 @@ function App() {
           // Actualizamos masivamente el caché de Zustand
           setDashboardData(freshData);
           messageApi.success('Datos actualizados con éxito desde el servidor.');
+        } else {
+          handleApiError(response.status, "la sincronización de datos");
         }
       } catch (error) {
         console.error('Error sincronizando al volver online', error);
@@ -77,7 +80,7 @@ function App() {
         {/* 2 y 3. 🛑 Indicador Visual y Fallback (Zustand provee los datos locales) */}
         {isOffline && (
           <Alert
-            message="Modo Offline Activado"
+            title="Modo Offline Activado"
             description="No hay conexión a Internet. Estás navegando con el último estado guardado localmente (Fallback). La interfaz se re-sincronizará automáticamente al detectar conexión."
             type="warning"
             showIcon

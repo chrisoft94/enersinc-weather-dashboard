@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Alert } from 'antd';
 import { useWeatherStore } from '../store/weatherStore';
+import { handleApiError } from '../utils/errorHandler';
 
 export const InsightsPanel = () => {
   const isOffline = useWeatherStore((state) => state.isOffline);
@@ -20,6 +21,8 @@ export const InsightsPanel = () => {
           const data = await response.json();
           setInsights(data);
           setCurrentIndex(0); // Reiniciar el slider cuando llegan nuevos datos
+        } else {
+          handleApiError(response.status, "motor de insights");
         }
       } catch (err) {
         console.error("Error fetching insights:", err);
@@ -90,7 +93,7 @@ export const InsightsPanel = () => {
               return (
                 <div key={idx} className="w-full flex-shrink-0 px-1">
                   <Alert
-                    message={
+                    title={
                       <div className="flex justify-between w-full">
                         <span>{insight.message}</span>
                         <span className="text-xs opacity-70 ml-4 hidden sm:block">Actualizado en tiempo real</span>

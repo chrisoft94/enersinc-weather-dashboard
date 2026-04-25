@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, message } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import { useWeatherStore } from '../store/weatherStore';
+import { handleApiError } from '../utils/errorHandler';
 
 export const WeatherTable = () => {
   const isOffline = useWeatherStore((state) => state.isOffline);
@@ -39,7 +40,7 @@ export const WeatherTable = () => {
           total: result.count,
         });
       } else {
-        message.error('Error al obtener el historial climático del servidor.');
+        handleApiError(response.status, "la consulta de historial climático");
       }
     } catch (error) {
       console.error(error);
