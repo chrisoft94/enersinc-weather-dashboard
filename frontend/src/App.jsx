@@ -5,6 +5,7 @@ import { useWeatherSocket } from './hooks/useWeatherSocket';
 import { Dashboard } from './components/Dashboard';
 import { WeatherCharts } from './components/WeatherCharts';
 import { WeatherTable } from './components/WeatherTable';
+import { InsightsPanel } from './components/InsightsPanel';
 import './App.css';
 
 function App() {
@@ -100,6 +101,7 @@ function App() {
           </button>
         </header>
 
+        <InsightsPanel />
         <Dashboard />
         <WeatherCharts />
         <WeatherTable />

@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from .models import WeatherData
 from .serializers import WeatherDataSerializer
+from .insights_service import InsightsService
 
 class WeatherPagination(PageNumberPagination):
     page_size = 10
@@ -81,3 +82,13 @@ class ExportWeatherCSVView(views.APIView):
             ])
 
         return response
+
+class WeatherInsightsView(views.APIView):
+    def get(self, request, *args, **kwargs):
+        try:
+            insights = InsightsService.generate_insights()
+            return Response(insights)
+        except Exception as e:
+            import logging
+            logging.getLogger(__name__).error(f"Error generating insights: {e}")
+            return Response({"error": "Failed to generate insights"}, status=500)
