@@ -2,6 +2,9 @@
 
 @config "../tailwind.config.js";
 
+/* Force class-based dark mode instead of OS preference */
+@variant dark (&:where(.dark, .dark *));
+
 @layer base {
   body {
     @apply bg-surface-bg text-brand-gray font-sans antialiased m-0;
