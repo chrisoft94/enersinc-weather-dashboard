@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Spin } from 'antd';
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
@@ -14,7 +13,6 @@ export const WeatherCharts = () => {
   const [historyTimeline, setHistoryTimeline] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Derivar datos del dashboard global (caché más reciente) para el BarChart
   const dataCity1 = dashboardData.find(d => d.city?.toLowerCase() === selectedCity1.toLowerCase());
   const dataCity2 = dashboardData.find(d => d.city?.toLowerCase() === selectedCity2.toLowerCase());
 
@@ -31,14 +29,12 @@ export const WeatherCharts = () => {
     }
   ];
 
-  // Hacer fetch histórico solo para el LineChart (Si estamos online)
   useEffect(() => {
     const fetchHistoryForCharts = async () => {
       if (isOffline) return;
       
       setLoading(true);
       try {
-        // Pedir los últimos 10 registros de cada ciudad para la curva temporal
         const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
         const res1 = await fetch(`${API_URL}/api/weather/?city=${selectedCity1}&size=10`);
         const res2 = await fetch(`${API_URL}/api/weather/?city=${selectedCity2}&size=10`);
@@ -46,11 +42,9 @@ export const WeatherCharts = () => {
         const data1 = res1.ok ? await res1.json() : { results: [] };
         const data2 = res2.ok ? await res2.json() : { results: [] };
 
-        // Ordenarlos cronológicamente (de más antiguo a más nuevo)
         const rev1 = data1.results.reverse();
         const rev2 = data2.results.reverse();
         
-        // Unificar ambas líneas temporales (simulación de timeline compartida)
         const maxLength = Math.max(rev1.length, rev2.length);
         const mergedTimeline = [];
         
@@ -80,70 +74,63 @@ export const WeatherCharts = () => {
   }, [selectedCity1, selectedCity2, isOffline]);
 
   return (
-    <div style={{ marginTop: '24px', marginBottom: '24px' }}>
-      <Row gutter={[24, 24]}>
+    <div className="mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* 1. 📈 Gráfico de Líneas (Series de Tiempo Históricas) */}
-        <Col xs={24} lg={14}>
-          <Card 
-            title={`Evolución Histórica: ${selectedCity1} vs ${selectedCity2}`} 
-            variant="borderless" 
-            style={{ boxShadow: '0 4px 16px rgba(0,0,0,0.04)', borderRadius: '12px' }}
-          >
-            <Spin spinning={loading} description="Calculando línea de tiempo...">
-              <div style={{ height: 350 }}>
-                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
-                  <LineChart data={historyTimeline} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                    <XAxis dataKey="time" tick={{ fill: '#8c8c8c' }} />
-                    <YAxis yAxisId="left" tick={{ fill: '#8c8c8c' }} />
-                    <YAxis yAxisId="right" orientation="right" tick={{ fill: '#8c8c8c' }} />
-                    <Tooltip 
-                      contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                    />
-                    <Legend wrapperStyle={{ paddingTop: '20px' }} />
-                    
-                    {/* Líneas Ciudad 1 */}
-                    <Line yAxisId="left" type="monotone" dataKey={`temp_${selectedCity1}`} name={`Temp ${selectedCity1}`} stroke="#1890ff" strokeWidth={3} dot={{r: 4}} activeDot={{r: 6}} connectNulls />
-                    <Line yAxisId="right" type="monotone" dataKey={`hum_${selectedCity1}`} name={`Hum ${selectedCity1}`} stroke="#13c2c2" strokeWidth={2} strokeDasharray="5 5" connectNulls />
-                    
-                    {/* Líneas Ciudad 2 */}
-                    <Line yAxisId="left" type="monotone" dataKey={`temp_${selectedCity2}`} name={`Temp ${selectedCity2}`} stroke="#f5222d" strokeWidth={3} dot={{r: 4}} activeDot={{r: 6}} connectNulls />
-                    <Line yAxisId="right" type="monotone" dataKey={`hum_${selectedCity2}`} name={`Hum ${selectedCity2}`} stroke="#eb2f96" strokeWidth={2} strokeDasharray="5 5" connectNulls />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </Spin>
-          </Card>
-        </Col>
-
-        {/* 2. 📊 Gráfico de Barras (Comparación Directa Actual) */}
-        <Col xs={24} lg={10}>
-          <Card 
-            title="Comparación Actual" 
-            variant="borderless" 
-            style={{ boxShadow: '0 4px 16px rgba(0,0,0,0.04)', borderRadius: '12px' }}
-          >
-            <div style={{ height: 350 }}>
-              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
-                <BarChart data={barChartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                  <XAxis dataKey="name" tick={{ fill: '#8c8c8c' }} />
-                  <YAxis tick={{ fill: '#8c8c8c' }} />
-                  <Tooltip 
-                    cursor={{fill: '#f5f5f5'}}
-                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                  />
-                  <Legend wrapperStyle={{ paddingTop: '20px' }} />
-                  <Bar dataKey={selectedCity1} fill="#1890ff" radius={[4, 4, 0, 0]} barSize={40} />
-                  <Bar dataKey={selectedCity2} fill="#f5222d" radius={[4, 4, 0, 0]} barSize={40} />
-                </BarChart>
-              </ResponsiveContainer>
+        {/* Gráfico de Líneas */}
+        <div className="lg:col-span-2 bg-surface-card border border-surface-border rounded-lg p-6 shadow-sm relative">
+          {loading && (
+            <div className="absolute inset-0 bg-white/50 flex items-center justify-center z-10 rounded-lg">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-blue"></div>
             </div>
-          </Card>
-        </Col>
+          )}
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">Evolución Histórica</h3>
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={historyTimeline} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                <XAxis dataKey="time" tick={{ fill: '#808080', fontSize: 12 }} axisLine={false} tickLine={false} />
+                <YAxis yAxisId="left" tick={{ fill: '#808080', fontSize: 12, fontFamily: 'monospace' }} axisLine={false} tickLine={false} />
+                <YAxis yAxisId="right" orientation="right" tick={{ fill: '#808080', fontSize: 12, fontFamily: 'monospace' }} axisLine={false} tickLine={false} />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E2E8F0', borderRadius: '8px' }}
+                  itemStyle={{ fontFamily: 'monospace' }}
+                />
+                <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', color: '#808080', paddingTop: '10px' }} />
+                
+                <Line yAxisId="left" type="monotone" dataKey={`temp_${selectedCity1}`} name={`Temp ${selectedCity1}`} stroke="#007BFF" strokeWidth={3} dot={{r: 4}} activeDot={{r: 6}} connectNulls />
+                <Line yAxisId="right" type="monotone" dataKey={`hum_${selectedCity1}`} name={`Hum ${selectedCity1}`} stroke="#87CEFA" strokeWidth={2} strokeDasharray="5 5" connectNulls />
+                
+                <Line yAxisId="left" type="monotone" dataKey={`temp_${selectedCity2}`} name={`Temp ${selectedCity2}`} stroke="#808080" strokeWidth={3} dot={{r: 4}} activeDot={{r: 6}} connectNulls />
+                <Line yAxisId="right" type="monotone" dataKey={`hum_${selectedCity2}`} name={`Hum ${selectedCity2}`} stroke="#4A5568" strokeWidth={2} strokeDasharray="5 5" connectNulls />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Gráfico de Barras */}
+        <div className="lg:col-span-1 bg-surface-card border border-surface-border rounded-lg p-6 shadow-sm">
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">Comparación Actual</h3>
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={barChartData} margin={{ top: 20, right: 10, left: -20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                <XAxis dataKey="name" tick={{ fill: '#808080', fontSize: 12 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: '#808080', fontSize: 12, fontFamily: 'monospace' }} axisLine={false} tickLine={false} />
+                <Tooltip 
+                  cursor={{fill: '#F8F9FA'}}
+                  contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E2E8F0', borderRadius: '8px' }}
+                  itemStyle={{ fontFamily: 'monospace' }}
+                />
+                <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', color: '#808080', paddingTop: '10px' }} />
+                <Bar dataKey={selectedCity1} fill="#007BFF" radius={[4, 4, 0, 0]} barSize={30} />
+                <Bar dataKey={selectedCity2} fill="#808080" radius={[4, 4, 0, 0]} barSize={30} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
         
-      </Row>
+      </div>
     </div>
   );
 };

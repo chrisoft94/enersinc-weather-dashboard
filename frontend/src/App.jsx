@@ -58,7 +58,7 @@ function App() {
   }, [setIsOffline, isOffline, messageApi]);
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
+    <div className="max-w-7xl mx-auto p-6 min-h-screen font-sans text-brand-gray bg-surface-bg">
       {contextHolder}
       
       {/* 2 y 3. 🛑 Indicador Visual y Fallback (Zustand provee los datos locales) */}
@@ -73,7 +73,14 @@ function App() {
         />
       )}
 
-      <h1>🌤️ Weather Dashboard</h1>
+      {/* Header Corporativo Enersinc */}
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Plataforma de Telemetría ETRM</h1>
+          <p className="text-sm font-medium text-brand-gray">Operaciones y Despacho Energético</p>
+        </div>
+      </header>
+
       <Dashboard />
       <WeatherCharts />
       <WeatherTable />

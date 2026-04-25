@@ -1,30 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, message, Typography } from 'antd';
+import { Table, Button, message } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import { useWeatherStore } from '../store/weatherStore';
-
-const { Title } = Typography;
 
 export const WeatherTable = () => {
   const isOffline = useWeatherStore((state) => state.isOffline);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   
-  // 2. 📄 Estado para Paginación Real (Server-side)
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
     total: 0,
   });
   
-  // Estado para filtros remotos
   const [cityFilter, setCityFilter] = useState(null);
 
-  // Función para consumir el endpoint DRF con paginación
   const fetchData = async (page = 1, pageSize = 10, city = null) => {
     if (isOffline) {
-      // Si estamos offline, podríamos cargar datos cacheados, pero el historial completo 
-      // generalmente reside en el servidor.
       return;
     }
     
@@ -39,7 +32,6 @@ export const WeatherTable = () => {
       const response = await fetch(url);
       if (response.ok) {
         const result = await response.json();
-        // El formato de DRF PageNumberPagination retorna: count, next, previous, results
         setData(result.results);
         setPagination({
           current: page,
@@ -57,23 +49,18 @@ export const WeatherTable = () => {
     }
   };
 
-  // Re-hacer fetch automático si cambian la página, el tamaño o el filtro
   useEffect(() => {
     fetchData(pagination.current, pagination.pageSize, cityFilter);
     // eslint-disable-next-line
   }, [pagination.current, pagination.pageSize, cityFilter, isOffline]);
 
-  // Manejador nativo de la tabla Ant Design cuando cambian filtros o páginas
   const handleTableChange = (newPagination, filters, sorter) => {
-    // Manejar el filtro por ciudad extraído de la cabecera
     const newCityFilter = filters.city ? filters.city[0] : null;
     
     if (newCityFilter !== cityFilter) {
       setCityFilter(newCityFilter);
-      // Cuando aplicamos un filtro nuevo, la paginación debe resetearse a la página 1
       setPagination(prev => ({ ...prev, current: 1 }));
     } else {
-      // Solamente cambió de página o tamaño
       setPagination({
         ...pagination,
         current: newPagination.current,
@@ -82,18 +69,15 @@ export const WeatherTable = () => {
     }
   };
 
-  // 4. 📥 Exportación: Llamar al endpoint CSV
   const handleExportCSV = () => {
     if (isOffline) {
       message.warning('Debes tener conexión a Internet para descargar el histórico CSV.');
       return;
     }
-    // Al abrir la URL, el navegador intercepta el header Content-Disposition y descarga el archivo
     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
     window.open(`${API_URL}/api/export/`, '_blank');
   };
 
-  // Definición de Columnas de Ant Design
   const columns = [
     {
       title: 'ID',
@@ -102,10 +86,9 @@ export const WeatherTable = () => {
       width: '8%',
     },
     {
-      title: 'Ciudad',
+      title: 'Punto de Medición',
       dataIndex: 'city',
       key: 'city',
-      // 3. 🔍 Filtros en Cabecera
       filters: [
         { text: 'Bogota', value: 'Bogota' },
         { text: 'Medellin', value: 'Medellin' },
@@ -113,52 +96,51 @@ export const WeatherTable = () => {
         { text: 'Barranquilla', value: 'Barranquilla' },
         { text: 'Cartagena', value: 'Cartagena' },
       ],
-      filterMultiple: false, // Forzar una ciudad a la vez para mapear fácil al query `?city=`
+      filterMultiple: false,
     },
     {
       title: 'Temperatura',
       dataIndex: 'temperature',
       key: 'temperature',
-      render: (val) => <strong style={{ color: '#1890ff' }}>{val} °C</strong>
+      render: (val) => <strong className="text-brand-blue font-mono">{val} °C</strong>
     },
     {
       title: 'Humedad',
       dataIndex: 'humidity',
       key: 'humidity',
-      render: (val) => `${val} %`
+      render: (val) => <span className="font-mono text-gray-700">{val} %</span>
     },
     {
       title: 'Viento',
       dataIndex: 'wind_speed',
       key: 'wind_speed',
-      render: (val) => `${val} m/s`
+      render: (val) => <span className="font-mono text-gray-700">{val} m/s</span>
     },
     {
       title: 'Fecha y Hora',
       dataIndex: 'timestamp',
       key: 'timestamp',
-      render: (text) => new Date(text).toLocaleString(),
+      render: (text) => <span className="text-brand-gray text-sm">{new Date(text).toLocaleString()}</span>,
     },
   ];
 
   return (
-    <div style={{ marginTop: '40px', background: '#fff', padding: '24px', borderRadius: '12px', boxShadow: '0 4px 16px rgba(0,0,0,0.04)' }}>
+    <div className="bg-surface-card border border-surface-border rounded-lg shadow-sm p-6">
       
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
-        <Title level={3} style={{ margin: 0, color: '#262626' }}>Historial de Registros</Title>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 border-b border-surface-border pb-4">
+        <h3 className="text-xl font-semibold text-gray-900">Historial de Telemetría</h3>
         <Button 
           type="primary" 
           size="large"
           icon={<DownloadOutlined />} 
           onClick={handleExportCSV}
           disabled={isOffline}
-          style={{ background: '#52c41a', borderColor: '#52c41a' }}
+          className="bg-brand-blue hover:bg-blue-700 border-none font-medium flex items-center"
         >
-          Exportar CSV
+          Exportar Despachos (CSV)
         </Button>
       </div>
       
-      {/* 1. 📊 Tabla de Ant Design */}
       <Table 
         columns={columns} 
         dataSource={data} 
@@ -173,7 +155,6 @@ export const WeatherTable = () => {
         loading={loading}
         onChange={handleTableChange}
         scroll={{ x: 'max-content' }} 
-        bordered
       />
     </div>
   );
