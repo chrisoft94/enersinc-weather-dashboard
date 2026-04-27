@@ -2,11 +2,10 @@ import os
 import requests
 import logging
 from django.utils import timezone
+from django.conf import settings
 from .models import WeatherData
 
 logger = logging.getLogger(__name__)
-
-OPENWEATHER_API_KEY = os.environ.get("OPENWEATHER_API_KEY", "")
 
 def get_weather(city_name):
     """
@@ -17,11 +16,11 @@ def get_weather(city_name):
     """
     try:
         # 1. Obtener coordenadas (Lat/Lon) mediante Geocoding API
-        geo_url = "http://api.openweathermap.org/geo/1.0/direct"
+        geo_url = settings.OPENWEATHER_GEO_URL
         geo_params = {
             "q": city_name,
             "limit": 1,
-            "appid": OPENWEATHER_API_KEY
+            "appid": settings.OPENWEATHER_API_KEY
         }
         geo_resp = requests.get(geo_url, params=geo_params, timeout=5)
         geo_resp.raise_for_status()
@@ -34,12 +33,12 @@ def get_weather(city_name):
         lon = geo_data[0]["lon"]
         
         # 2. Consultar Current Weather API 2.5 (La API 3.0 falla por suscripción)
-        url = "https://api.openweathermap.org/data/2.5/weather"
+        url = settings.OPENWEATHER_API_URL
         params = {
             "lat": lat,
             "lon": lon,
             "units": "metric",
-            "appid": OPENWEATHER_API_KEY
+            "appid": settings.OPENWEATHER_API_KEY
         }
         
         response = requests.get(url, params=params, timeout=5)

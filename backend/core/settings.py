@@ -137,3 +137,10 @@ REST_FRAMEWORK = {
 
 # Cors Config (Permitir el Frontend)
 CORS_ALLOW_ALL_ORIGINS = True
+
+# ==========================================
+# 5. APIs Externas (OpenWeather)
+# ==========================================
+OPENWEATHER_API_KEY = os.environ.get("OPENWEATHER_API_KEY", "")
+OPENWEATHER_GEO_URL = os.environ.get("OPENWEATHER_GEO_URL", "http://api.openweathermap.org/geo/1.0/direct")
+OPENWEATHER_API_URL = os.environ.get("OPENWEATHER_API_URL", "https://api.openweathermap.org/data/2.5/weather")
