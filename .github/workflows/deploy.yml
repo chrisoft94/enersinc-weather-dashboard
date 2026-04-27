@@ -1,0 +1,26 @@
+name: Deploy to Oracle Cloud
+
+# 1. Cuándo se ejecuta el robot (Cuando haces push a la rama 'main')
+on:
+  push:
+    branches:
+      - main
+
+# 2. Las tareas que hará el robot
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Conectar por SSH y Desplegar
+        # Usamos una acción pre-construida muy segura para SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          # Los comandos que el robot escribirá en tu consola
+          script: |
+            cd ~/proyectofinal/enersinc-weather-dashboard/
+            git pull origin main
+            docker compose up -d --build
