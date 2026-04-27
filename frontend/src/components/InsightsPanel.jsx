@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Alert } from 'antd';
 import { useWeatherStore } from '../store/weatherStore';
 import { handleApiError } from '../utils/errorHandler';
+import { AlertCard } from './AlertCard';
 
 export const InsightsPanel = () => {
   const isOffline = useWeatherStore((state) => state.isOffline);
@@ -89,19 +89,17 @@ export const InsightsPanel = () => {
             style={{ transform: `translateX(-${currentIndex * 100}%)` }}
           >
             {insights.map((insight, idx) => {
-              const { type, className } = getAlertProps(insight.color);
+              const { type: alertType } = getAlertProps(insight.color);
               return (
                 <div key={idx} className="w-full flex-shrink-0 px-1">
-                  <Alert
+                  <AlertCard
                     title={
-                      <div className="flex justify-between w-full">
+                      <div className="flex justify-between items-center w-full">
                         <span>{insight.message}</span>
-                        <span className="text-xs opacity-70 ml-4 hidden sm:block">Actualizado en tiempo real</span>
+                        <span className="text-xs opacity-70 ml-4 hidden sm:block font-normal">Actualizado en tiempo real</span>
                       </div>
                     }
-                    type={type}
-                    showIcon
-                    className={`border-l-4 rounded-md shadow-sm ${className} h-full`}
+                    type={alertType}
                   />
                 </div>
               );

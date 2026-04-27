@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { message, Alert } from 'antd';
+import { message } from 'antd';
 import { useWeatherStore } from './store/weatherStore';
 import { useWeatherSocket } from './hooks/useWeatherSocket';
 import { handleApiError } from './utils/errorHandler';
+import { AlertCard } from './components/AlertCard';
 import { Dashboard } from './components/Dashboard';
 import { WeatherCharts } from './components/WeatherCharts';
 import { WeatherTable } from './components/WeatherTable';
@@ -79,13 +80,11 @@ function App() {
         
         {/* 2 y 3. 🛑 Indicador Visual y Fallback (Zustand provee los datos locales) */}
         {isOffline && (
-          <Alert
+          <AlertCard
             title="Modo Offline Activado"
             description="No hay conexión a Internet. Estás navegando con el último estado guardado localmente (Fallback). La interfaz se re-sincronizará automáticamente al detectar conexión."
             type="warning"
-            showIcon
-            banner
-            style={{ marginBottom: '20px' }}
+            className="mb-5"
           />
         )}
 
