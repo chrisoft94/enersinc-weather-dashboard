@@ -7,6 +7,9 @@ from unittest.mock import patch, MagicMock
 import requests
 from .models import WeatherData
 from .services import get_weather
+from .insights_service import InsightsService
+from django.utils import timezone
+from datetime import timedelta
 
 class WeatherTests(TestCase):
     def setUp(self):
@@ -149,3 +152,35 @@ class WeatherTests(TestCase):
             get_weather("CiudadInventada")
             
         self.assertIn("La API de clima falló y no hay datos", str(context.exception))
+
+    # ==========================================
+    # 4. 🧠 Insights y Data Engineering
+    # ==========================================
+    def test_insights_generation(self):
+        # Limpiar BD y crear un escenario de pico térmico
+        WeatherData.objects.all().delete()
+        now = timezone.now()
+        
+        WeatherData.objects.create(
+            city="Barranquilla",
+            temperature=30.0,
+            humidity=80.0,
+            wind_speed=2.0,
+            timestamp=now
+        )
+        
+        insights = InsightsService.generate_insights()
+        
+        self.assertTrue(len(insights) > 0)
+        # Verificar que se genere el insight de pico térmico
+        peak_insight = next((i for i in insights if i['type'] == 'thermal_peak'), None)
+        self.assertIsNotNone(peak_insight)
+        self.assertEqual(peak_insight['city'], "Barranquilla")
+        self.assertEqual(peak_insight['color'], "orange")
+
+    def test_insights_api_endpoint(self):
+        url = reverse('weather-insights')
+        response = self.client.get(url)
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsInstance(response.data, list)
