@@ -39,7 +39,7 @@ services:
       - DB_HOST=db
       - DB_PORT=5432
       - REDIS_URL=redis://redis:6379/0
-      - OPENWEATHER_API_KEY=your_api_key_here # Reemplazar con tu propia API Key
+      - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
     depends_on:
       - db
       - redis
