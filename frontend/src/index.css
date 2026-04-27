@@ -49,3 +49,16 @@
 .dark .ant-select-arrow {
   @apply !text-gray-400;
 }
+
+/* Fix Filter Icon visibility in Dark Mode */
+.dark .ant-table-filter-trigger {
+  @apply !text-gray-300;
+}
+
+.dark .ant-table-filter-trigger:hover {
+  @apply !text-white !bg-slate-700;
+}
+
+.dark .ant-table-filter-trigger.active {
+  @apply !text-brand-blue;
+}
