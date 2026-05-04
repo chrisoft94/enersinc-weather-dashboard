@@ -425,3 +425,4 @@ docker-compose exec backend coverage run manage.py test && coverage report
 Desarrollado para **Enersinc** · Prueba Técnica Full Stack Advanced
 
 </div>
+ 
