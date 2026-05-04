@@ -14,11 +14,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Deploy to Heroku
-        uses: AkhileshNS/heroku-deploy@v3.13.15
-        with:
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: "dashboard-weather-real-time"
-          heroku_email: ${{ secrets.HEROKU_EMAIL }}
-          appdir: "backend" # Esto le indica que despliegue SOLO la carpeta backend
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: |
+          git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/dashboard-weather-real-time.git
+          git push heroku `git subtree split --prefix backend main`:refs/heads/main --force
