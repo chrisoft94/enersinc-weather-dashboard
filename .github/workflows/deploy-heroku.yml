@@ -21,5 +21,10 @@ jobs:
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: |
-          git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/dashboard-weather-real-time.git
+          cat > ~/.netrc <<EOF
+          machine git.heroku.com
+            login _
+            password $HEROKU_API_KEY
+          EOF
+          git remote add heroku https://git.heroku.com/dashboard-weather-real-time.git
           git push heroku `git subtree split --prefix backend main`:refs/heads/main --force
