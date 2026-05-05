@@ -69,6 +69,8 @@ WSGI_APPLICATION = 'core.wsgi.application'
 ASGI_APPLICATION = 'core.asgi.application'
 
 REDIS_URL = os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379/0')
+if REDIS_URL.startswith('rediss://'):
+    REDIS_URL += '?ssl_cert_reqs=none'
 
 CHANNEL_LAYERS = {
     'default': {
