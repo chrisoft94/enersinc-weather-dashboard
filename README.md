@@ -41,36 +41,36 @@ flowchart TD
     classDef external fill:#f39c12,stroke:#333,stroke-width:2px,color:#fff
 
     subgraph Vercel [Frontend - Vercel Edge Network]
-        Client["React + Zustand\n(Cliente Web)"]:::frontend
+        Client["React + Zustand<br>(Cliente Web)"]:::frontend
     end
 
     subgraph Heroku [Backend - Heroku Dynos]
-        DjangoAPI["Django REST API\n(Peticiones HTTP)"]:::backend
-        Insights["Motor de Insights\n(Análisis en memoria)"]:::backend
-        Channels["Daphne / Django Channels\n(Servidor WebSockets)"]:::backend
+        DjangoAPI["Django REST API<br>(Peticiones HTTP)"]:::backend
+        Insights["Motor de Insights<br>(Análisis en memoria)"]:::backend
+        Channels["Daphne / Django Channels<br>(Servidor WebSockets)"]:::backend
     end
 
-    Redis[("Heroku Redis\n(Caché & Pub/Sub)")]:::cache
-    PostgreSQL[("Heroku Postgres\n(Base de Datos)")]:::db
-    OpenWeather["OpenWeather API\n(Proveedor Externo)"]:::external
+    Redis[("Heroku Redis<br>(Caché & Pub/Sub)")]:::cache
+    PostgreSQL[("Heroku Postgres<br>(Base de Datos)")]:::db
+    OpenWeather["OpenWeather API<br>(Proveedor Externo)"]:::external
 
     %% Conexiones Frontend - Backend
-    Client <-->|Llamadas REST (HTTPS) - Maneja CORS| DjangoAPI
-    Client <-->|Streaming (WSS)| Channels
+    Client <-->|"Llamadas REST (HTTPS) - Maneja CORS"| DjangoAPI
+    Client <-->|"Streaming (WSS)"| Channels
     
     %% Lógica interna del Backend
     DjangoAPI <--> Insights
     
     %% Interacción con Bases de Datos y Caché
-    DjangoAPI -->|Lectura / Escritura| PostgreSQL
-    Insights -->|Funciones de Ventana| PostgreSQL
-    DjangoAPI <-->|Caché con TTL (Cache-Aside)| Redis
+    DjangoAPI -->|"Lectura / Escritura"| PostgreSQL
+    Insights -->|"Funciones de Ventana"| PostgreSQL
+    DjangoAPI <-->|"Caché con TTL (Cache-Aside)"| Redis
     
     %% Conexiones externas
-    DjangoAPI -.->|Consulta On-Demand\n(Si expira TTL)| OpenWeather
+    DjangoAPI -.->|"Consulta On-Demand<br>(Si expira TTL)"| OpenWeather
 
     %% Interacción de WebSockets
-    Channels <-->|Channel Layer (Message Broker)| Redis
+    Channels <-->|"Channel Layer (Message Broker)"| Redis
 ```
 
 ---
