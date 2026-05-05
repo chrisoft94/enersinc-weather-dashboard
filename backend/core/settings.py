@@ -98,7 +98,7 @@ DATABASES = {
 # Configuración especial para Heroku: Sobrescribir con DATABASE_URL si existe
 if 'DATABASE_URL' in os.environ:
     DATABASES['default'] = dj_database_url.config(
-        conn_max_age=600,
+        conn_max_age=0,
         conn_health_checks=True,
     )
 
