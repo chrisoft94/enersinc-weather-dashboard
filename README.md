@@ -135,33 +135,32 @@ Esta sección documenta el razonamiento detrás de cada elección tecnológica r
 ```
 weather-dashboard/
 ├── backend/
+│   ├── core/
+│   │   ├── settings.py         # Configuración (DB dinámica, CORS, Redis)
+│   │   ├── asgi.py             # Entry point ASGI para WebSockets y HTTP
+│   │   └── urls.py
 │   ├── weather/
 │   │   ├── models.py           # Modelo WeatherData
-│   │   ├── views.py            # Endpoints REST
+│   │   ├── views.py            # Endpoints REST y control de caché
 │   │   ├── serializers.py      # Serialización DRF
-│   │   ├── consumers.py        # WebSocket consumers (Channels)
-│   │   ├── tasks.py            # Celery tasks (fetch OpenWeather)
-│   │   ├── insights_service.py # Motor de análisis climático
-│   │   └── urls.py
-│   ├── config/
-│   │   ├── settings.py
-│   │   ├── asgi.py             # Entry point ASGI
-│   │   └── celery.py
-│   ├── Dockerfile
+│   │   ├── consumers.py        # WebSocket consumers (Pub/Sub)
+│   │   ├── services.py         # Cliente OpenWeather API
+│   │   └── insights_service.py # Motor de análisis y reglas climáticas
+│   ├── manage.py
+│   ├── Procfile                # Comando de arranque de Heroku y Release Phase
 │   └── requirements.txt
 │
 ├── frontend/
 │   ├── src/
-│   │   ├── components/         # Componentes UI
-│   │   ├── store/              # Zustand slices
-│   │   ├── hooks/              # Custom hooks (useWebSocket, useOffline)
-│   │   ├── services/           # Clientes API REST
-│   │   └── pages/
-│   ├── Dockerfile
+│   │   ├── components/         # Componentes UI (Gráficas, KPIs)
+│   │   ├── hooks/              # Custom hooks (useWeatherSocket)
+│   │   ├── App.jsx             # Punto de entrada de UI
+│   │   └── index.css           # Estilos base
+│   ├── package.json
 │   └── vite.config.js
 │
-├── docker-compose.yml
-├── .env.example
+├── .github/
+│   └── workflows/              # Github Actions (deploy-heroku.yml)
 └── README.md
 ```
 
