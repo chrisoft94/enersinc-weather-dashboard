@@ -34,39 +34,43 @@ Frontend (React) → REST API (DRF) → Redis Cache → PostgreSQL → OpenWeath
 
 ```mermaid
 flowchart TD
-    classDef frontend fill:#007BFF,stroke:#333,stroke-width:2px,color:#fff
-    classDef backend fill:#092e20,stroke:#333,stroke-width:2px,color:#fff
+    classDef frontend fill:#000000,stroke:#333,stroke-width:2px,color:#fff
+    classDef backend fill:#430098,stroke:#333,stroke-width:2px,color:#fff
     classDef db fill:#336791,stroke:#333,stroke-width:2px,color:#fff
     classDef cache fill:#dc382d,stroke:#333,stroke-width:2px,color:#fff
     classDef external fill:#f39c12,stroke:#333,stroke-width:2px,color:#fff
 
-    Client["Navegador Web\n(React + Tailwind + Zustand)"]:::frontend
-
-    subgraph Django_App [Servidor Django]
-        DjangoAPI["Django REST Framework\n(HTTP Endpoints)"]:::backend
-        Insights["Motor de Insights\n(Data Engineering)"]:::backend
-        Channels["Django Channels\n(WebSockets)"]:::backend
-        Celery["Celery Worker\n(Background Tasks)"]:::backend
+    subgraph Vercel [Frontend - Vercel Edge Network]
+        Client["React + Zustand\n(Cliente Web)"]:::frontend
     end
 
-    Redis[("Redis\n(Caché & Broker)")]:::cache
-    PostgreSQL[("PostgreSQL\n(Database)")]:::db
-    OpenWeather["OpenWeather API\n(External Service)"]:::external
+    subgraph Heroku [Backend - Heroku Dynos]
+        DjangoAPI["Django REST API\n(Peticiones HTTP)"]:::backend
+        Insights["Motor de Insights\n(Análisis en memoria)"]:::backend
+        Channels["Daphne / Django Channels\n(Servidor WebSockets)"]:::backend
+    end
 
-    Client <-->|REST API / Insights| DjangoAPI
+    Redis[("Heroku Redis\n(Caché & Pub/Sub)")]:::cache
+    PostgreSQL[("Heroku Postgres\n(Base de Datos)")]:::db
+    OpenWeather["OpenWeather API\n(Proveedor Externo)"]:::external
+
+    %% Conexiones Frontend - Backend
+    Client <-->|Llamadas REST (HTTPS) - Maneja CORS| DjangoAPI
+    Client <-->|Streaming (WSS)| Channels
+    
+    %% Lógica interna del Backend
     DjangoAPI <--> Insights
-    Client <-->|WebSockets| Channels
+    
+    %% Interacción con Bases de Datos y Caché
+    DjangoAPI -->|Lectura / Escritura| PostgreSQL
+    Insights -->|Funciones de Ventana| PostgreSQL
+    DjangoAPI <-->|Caché con TTL (Cache-Aside)| Redis
+    
+    %% Conexiones externas
+    DjangoAPI -.->|Consulta On-Demand\n(Si expira TTL)| OpenWeather
 
-    DjangoAPI -->|Consulta| PostgreSQL
-    Insights -->|Agregación de Ventana| PostgreSQL
-    DjangoAPI <-->|Caché TTL| Redis
-    DjangoAPI -.->|Request| OpenWeather
-
-    Channels <-->|Channel Layer| Redis
-    Celery -->|Fetch| OpenWeather
-    Celery -->|Store| PostgreSQL
-    Celery -.->|Notify via Broker| Channels
-    DjangoAPI -.->|Trigger Task| Celery
+    %% Interacción de WebSockets
+    Channels <-->|Channel Layer (Message Broker)| Redis
 ```
 
 ---
